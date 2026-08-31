@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="/app.html">♡ TwoHearts</a>
+  <div class="nav-actions">
+    <span class="tag" id="adminRole">ADMIN</span>
+    <a href="/app.html" class="button light" style="padding:8px 14px;font-size:13px">Exit Admin</a>
+  </div>
+</nav>
+
+<main class="wide">
+  <div class="section">
+    <p class="eyebrow">ADMIN DASHBOARD</p>
+    <h1>Control Center</h1>
+    <p>All actions are logged to the audit trail.</p>
+  </div>
+
+  <!-- Tab bar -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:12px">
+    <button class="admin-tab active button light" data-tab="overview" style="font-size:13px">📊 Overview</button>
+    <button class="admin-tab button light" data-tab="users" style="font-size:13px">👥 Users</button>
+    <button class="admin-tab button light" data-tab="reports" style="font-size:13px">🚩 Reports</button>
+    <button class="admin-tab button light" data-tab="verification" style="font-size:13px">✅ Verification</button>
+    <button class="admin-tab button light" data-tab="audit" style="font-size:13px">📋 Audit Log</button>
+  </div>
+
+  <!-- Overview panel -->
+  <div class="admin-panel" id="panel-overview">
+    <div class="admin-grid">
+      <div class="stat-card skeleton" style="height:100px"></div>
+      <div class="stat-card skeleton" style="height:100px"></div>
+      <div class="stat-card skeleton" style="height:100px"></div>
+      <div class="stat-card skeleton" style="height:100px"></div>
+    </div>
+  </div>
+
+  <!-- Users panel -->
+  <div class="admin-panel" id="panel-users" style="display:none">
+    <div class="flex-between mb">
+      <h2>All Users</h2>
+      <div style="display:flex;gap:8px">
+        <input id="userSearch" placeholder="Search username…" style="width:200px;margin:0">
+        <button class="button dark" id="userSearchBtn">Search</button>
+      </div>
+    </div>
+    <div id="userList"><p class="status">Loading…</p></div>
+  </div>
+
+  <!-- Reports panel -->
+  <div class="admin-panel" id="panel-reports" style="display:none">
+    <div class="flex-between mb">
+      <h2>Pending Reports</h2>
+      <button class="button light" id="refreshReports">Refresh</button>
+    </div>
+    <div id="reportList"><p class="status">Loading…</p></div>
+  </div>
+
+  <!-- Verification panel -->
+  <div class="admin-panel" id="panel-verification" style="display:none">
+    <div class="flex-between mb">
+      <h2>Verification Queue</h2>
+      <p style="font-size:13px;color:var(--muted)">All video access is logged</p>
+    </div>
+    <div id="verifList"><p class="status">Loading…</p></div>
+  </div>
+
+  <!-- Audit log panel -->
+  <div class="admin-panel" id="panel-audit" style="display:none">
+    <h2 class="mb">Your Audit Log</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Every action you take as an admin is recorded here permanently.</p>
+    <div id="auditList"><p class="status">Loading…</p></div>
+  </div>
+</main>
+<script type="module" src="/src/pages/admin.js"></script>
+<script type="module">
+  // Wire up search and refresh buttons
+  document.querySelector('#userSearchBtn')?.addEventListener('click', () => {
+    import('/src/pages/admin.js'); // re-import triggers loadUsers via event
+  });
+  document.querySelector('#refreshReports')?.addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

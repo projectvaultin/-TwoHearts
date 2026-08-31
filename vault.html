@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Private Vault — TwoHearts</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav compact">
+  <a class="brand" href="/app.html">♡ TwoHearts</a>
+  <div><a href="/settings.html">⚙️</a></div>
+</nav>
+<main class="page">
+  <div class="page-head">
+    <div style="font-size:40px">🔒</div>
+    <div>
+      <h1>Private Vault</h1>
+      <p style="margin:0;color:#666;font-size:14px">Only you and your partner can access these files. Links expire in 2 minutes.</p>
+    </div>
+  </div>
+
+  <section class="panel" style="margin-bottom:16px">
+    <b>Upload to vault</b>
+    <form id="uploadForm" style="margin-top:12px">
+      <input type="file" id="vaultFile" accept="image/*,video/*" style="margin-bottom:12px">
+      <button type="submit" class="button dark full">Upload privately</button>
+    </form>
+    <p id="status" class="status"></p>
+  </section>
+
+  <section class="panel">
+    <b>Vault contents</b>
+    <p style="font-size:13px;color:#888;margin:4px 0 16px">Tap a file to open it. Links are private and expire automatically.</p>
+    <div id="vaultGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px">
+      <p class="status">Loading…</p>
+    </div>
+  </section>
+</main>
+<script type="module" src="/src/pages/vault.js"></script>
+</body>
+</html>

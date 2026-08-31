@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Welcome — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/src/styles/app.css">
+  <style>
+    .step { display:none }
+    .step.active { display:block }
+    .step-dots { display:flex;justify-content:center;gap:8px;margin:24px 0 }
+    .step-dot { width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .3s }
+    .step-dot.active { background:var(--accent);transform:scale(1.3) }
+    .onboard-wrap { max-width:460px;margin:0 auto;padding:40px 20px }
+  </style>
+</head>
+<body style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(236,72,153,.06))">
+<main class="onboard-wrap">
+  <div style="text-align:center;margin-bottom:32px">
+    <a class="brand" href="/" style="font-size:28px">♡ TwoHearts</a>
+  </div>
+
+  <!-- Step dots -->
+  <div class="step-dots">
+    <div class="step-dot active" id="dot0"></div>
+    <div class="step-dot" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+  </div>
+
+  <!-- Step 1: Welcome + Name -->
+  <div class="step active" id="step0">
+    <div class="auth-card">
+      <div style="font-size:60px;text-align:center;margin-bottom:16px">👋</div>
+      <h2 style="text-align:center;margin-bottom:8px">Welcome to TwoHearts</h2>
+      <p style="text-align:center;margin-bottom:24px">Let's set up your profile in 3 quick steps.</p>
+      <label>Your display name
+        <input id="onboardName" placeholder="What should we call you?" maxlength="50">
+      </label>
+      <label style="margin-top:12px">Username
+        <input id="onboardUsername" placeholder="yourname (letters, numbers, _)" maxlength="30" style="font-family:monospace">
+      </label>
+      <label style="margin-top:12px">A little about you
+        <textarea id="onboardAbout" placeholder="Share something with your partner…" rows="2" maxlength="300"></textarea>
+      </label>
+      <p id="step0Status" class="status mt"></p>
+      <button class="button accent full mt" id="step0Next">Next →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Photo -->
+  <div class="step" id="step1">
+    <div class="auth-card" style="text-align:center">
+      <div style="font-size:60px;margin-bottom:16px">📸</div>
+      <h2 style="margin-bottom:8px">Add a profile photo</h2>
+      <p style="margin-bottom:24px">Help your partner recognise you instantly.</p>
+      <div style="position:relative;display:inline-block;margin-bottom:20px">
+        <div class="avatar avatar-xl" id="onboardAvatarPreview" style="margin:0 auto">?</div>
+        <label for="onboardAvatarInput" style="position:absolute;bottom:0;right:0;
+          background:var(--accent);color:#fff;border-radius:50%;width:34px;height:34px;
+          display:grid;place-items:center;cursor:pointer;font-size:18px">+</label>
+        <input type="file" id="onboardAvatarInput" accept="image/*" style="display:none">
+      </div>
+      <p id="step1Status" class="status"></p>
+      <button class="button accent full mt" id="step1Next">Next →</button>
+      <button class="button light full mt" id="step1Skip">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Pair or Connect -->
+  <div class="step" id="step2">
+    <div class="auth-card">
+      <div style="font-size:60px;text-align:center;margin-bottom:16px">❤️</div>
+      <h2 style="text-align:center;margin-bottom:8px">Connect with someone</h2>
+      <p style="text-align:center;margin-bottom:24px">Pair with your partner for a private shared space, or connect with a friend.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <a href="/couple.html" class="button accent full" style="font-size:16px">
+          💑 Pair with my partner
+        </a>
+        <a href="/connect.html" class="button light full" style="font-size:16px">
+          🔍 Connect with friends
+        </a>
+        <a href="/app.html" class="button light full" style="font-size:15px;color:var(--muted)">
+          Skip — I'll do this later
+        </a>
+      </div>
+      <div style="background:rgba(124,58,237,.08);border-radius:14px;padding:16px;margin-top:20px">
+        <b style="font-size:14px">💡 Your shareable link</b>
+        <p id="myProfileLink" style="font-size:13px;color:var(--accent);margin-top:6px;word-break:break-all"></p>
+        <button class="button light" style="padding:6px 14px;font-size:13px;margin-top:8px" id="copyMyLink">Copy link</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { requireSession } from '/src/lib/auth.js';
+import { supabase } from '/src/lib/supabase.js';
+import { toast } from '/src/lib/ui.js';
+
+const session = await requireSession();
+const uid     = session.user.id;
+let currentStep = 0;
+
+// Pre-fill from metadata
+const meta = session.user.user_metadata || {};
+document.querySelector('#onboardName').value     = meta.display_name || '';
+document.querySelector('#onboardUsername').value = meta.username     || '';
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.step-dot').forEach((d,i) => d.classList.toggle('active', i===n));
+  currentStep = n;
+}
+
+// Step 1: Save name
+document.querySelector('#step0Next').onclick = async () => {
+  const name = document.querySelector('#onboardName').value.trim();
+  const user = document.querySelector('#onboardUsername').value.trim().toLowerCase();
+  const about= document.querySelector('#onboardAbout').value.trim();
+  const st   = document.querySelector('#step0Status');
+
+  if (!name || !user) { st.textContent = 'Name and username are required.'; return; }
+  if (!/^[a-z0-9_]{3,30}$/.test(user)) { st.textContent = 'Username: letters, numbers, _ only (3-30 chars).'; return; }
+
+  st.textContent = 'Saving…';
+  const { error } = await supabase.from('profiles').upsert({
+    id: uid, display_name: name, username: user, about,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'id' });
+
+  if (error) { st.textContent = error.message.includes('unique') ? 'Username taken, try another.' : error.message; return; }
+  toast('Profile saved ✓', 'success');
+  goStep(1);
+
+  // Set avatar preview initial
+  document.querySelector('#onboardAvatarPreview').textContent = name[0].toUpperCase();
+};
+
+// Step 2: Avatar upload
+document.querySelector('#onboardAvatarInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { toast('Max 5MB','error'); return; }
+
+  document.querySelector('#step1Status').textContent = 'Uploading…';
+  const ext  = file.name.split('.').pop();
+  const path = `avatars/${uid}.${ext}`;
+
+  const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert:true });
+  if (error) { document.querySelector('#step1Status').textContent = error.message; return; }
+
+  const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+  const url = data.publicUrl + '?t=' + Date.now();
+  await supabase.from('profiles').update({ avatar_url: url }).eq('id', uid);
+  document.querySelector('#onboardAvatarPreview').innerHTML =
+    `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+  document.querySelector('#step1Status').textContent = 'Photo uploaded ✓';
+  toast('Photo saved ✓', 'success');
+});
+
+document.querySelector('#step1Next').onclick  = () => goStep(2);
+document.querySelector('#step1Skip').onclick  = () => goStep(2);
+
+// Step 3: Show profile link
+const { data: prof } = await supabase.from('profiles').select('username').eq('id',uid).maybeSingle();
+if (prof?.username) {
+  const link = `${location.origin}/connect.html?u=${prof.username}`;
+  document.querySelector('#myProfileLink').textContent = link;
+  document.querySelector('#copyMyLink').onclick = () => {
+    navigator.clipboard.writeText(link);
+    toast('Link copied!', 'success');
+  };
+}
+</script>
+</body>
+</html>

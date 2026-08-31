@@ -1,0 +1,1 @@
+export const vault={status:'NOT_CONFIGURED'};

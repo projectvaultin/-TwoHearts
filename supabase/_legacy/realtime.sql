@@ -1,0 +1,6 @@
+-- Enable only the live tables required by the product after RLS review.
+-- alter publication supabase_realtime add table public.messages;
+-- alter publication supabase_realtime add table public.message_reactions;
+-- alter publication supabase_realtime add table public.message_receipts;
+-- alter publication supabase_realtime add table public.calls;
+-- alter publication supabase_realtime add table public.call_signals;

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Connect — TwoHearts</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav compact">
+  <a class="brand" href="/app.html">♡ TwoHearts</a>
+  <div><a href="/app.html">Home</a></div>
+</nav>
+<main class="page">
+  <div class="page-head"><h1>🔍 Find & Connect</h1></div>
+
+  <!-- My shareable link -->
+  <section class="panel" style="margin-bottom:16px">
+    <b>Share your profile</b>
+    <p style="color:#666;font-size:14px">Send this link to anyone you want to connect with. They open it and send you a request — you approve before any chat starts.</p>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="myLink" readonly style="flex:1;font-size:13px;background:#f4f4f8">
+      <button class="button dark" id="copyLink">Copy</button>
+      <button class="button light" id="shareLink">Share ↗</button>
+    </div>
+    <div id="qrWrap" style="margin-top:16px;text-align:center"></div>
+  </section>
+
+  <!-- Search by username -->
+  <section class="panel" style="margin-bottom:16px">
+    <b>Search by username</b>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input id="searchInput" placeholder="@username" style="flex:1;margin:0">
+      <button class="button dark" id="searchBtn">Search</button>
+    </div>
+    <div id="searchResult" style="margin-top:16px"></div>
+  </section>
+
+  <!-- Incoming requests -->
+  <section class="panel" style="margin-bottom:16px">
+    <b>Connection requests</b>
+    <div id="requestList" style="margin-top:12px"><p class="status">Loading…</p></div>
+  </section>
+
+  <!-- My connections -->
+  <section class="panel">
+    <b>My connections</b>
+    <div id="connectionList" style="margin-top:12px"><p class="status">Loading…</p></div>
+  </section>
+</main>
+<script type="module" src="/src/pages/connect.js"></script>
+</body>
+</html>

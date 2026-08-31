@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chat — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/app.html" class="icon-btn">←</a>
+  <div class="chat-header" style="flex:1;border:0;padding:0 12px">
+    <div class="avatar" id="partnerAvatar">?</div>
+    <div class="info">
+      <b id="partnerName">Loading…</b>
+      <small id="partnerStatus"><span class="online-dot"></span>Online</small>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <a href="/calls.html" class="icon-btn" title="Call">📞</a>
+    <a href="/calls.html" class="icon-btn" title="Video call">📹</a>
+  </div>
+</nav>
+
+<div class="chat-wrap">
+  <div class="message-list" id="messageList"></div>
+  <div class="typing-bar" id="typingBar"></div>
+  <form class="composer" id="composer">
+    <button type="button" class="icon-btn" id="emojiBtn" title="Emoji">😊</button>
+    <input id="messageInput" placeholder="Message…" autocomplete="off">
+    <button type="submit" class="send-btn">➤</button>
+  </form>
+</div>
+
+<!-- Simple emoji picker -->
+<div id="emojiPicker" style="display:none;position:fixed;bottom:70px;left:10px;right:10px;
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:12px;z-index:300;display:none;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto">
+</div>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <a href="/app.html"><span class="icon">🏠</span>Home</a>
+  <a href="/chat.html" class="active"><span class="icon">💬</span>Chat</a>
+  <a href="/connect.html"><span class="icon">🔍</span>Connect</a>
+  <a href="/memories.html"><span class="icon">📸</span>Memories</a>
+  <a href="/settings.html"><span class="icon">⚙️</span>Settings</a>
+</nav>
+
+<script type="module" src="/src/pages/chat.js"></script>
+<script type="module">
+  // Emoji picker
+  const emojis = ['❤️','😍','😂','😊','🥰','😘','💕','💖','✨','🎉','👍','🙏',
+    '😢','😤','🤔','😴','🌹','🌙','⭐','🔥','💯','🎵','🍕','🎂','🌈','🦋'];
+  const picker = document.querySelector('#emojiPicker');
+  const input  = document.querySelector('#messageInput');
+  emojis.forEach(e => {
+    const btn = document.createElement('button');
+    btn.textContent = e; btn.style = 'font-size:26px;background:none;border:0;cursor:pointer;border-radius:8px;padding:4px';
+    btn.onclick = () => { input.value += e; picker.style.display='none'; input.focus(); };
+    picker.appendChild(btn);
+  });
+  document.querySelector('#emojiBtn').onclick = (ev) => {
+    ev.stopPropagation();
+    picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+  };
+  document.addEventListener('click', () => picker.style.display = 'none');
+</script>
+</body>
+</html>

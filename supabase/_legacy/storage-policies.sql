@@ -1,0 +1,6 @@
+-- Create private buckets:
+-- couple-media
+-- couple-vault
+-- avatars
+-- Sensitive media should be encrypted client-side before upload.
+-- Add Storage object policies after the final path convention is chosen.

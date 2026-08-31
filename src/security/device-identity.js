@@ -1,0 +1,1 @@
+export const deviceIdentity={status:'NOT_CONFIGURED'};

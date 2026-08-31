@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verify Email — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<main class="auth">
+  <div class="auth-card" style="text-align:center">
+    <a class="brand" href="/">♡ TwoHearts</a>
+    <div id="pendingView">
+      <div style="font-size:72px;margin:24px 0">📬</div>
+      <h1>Check your email</h1>
+      <p style="margin:12px 0 24px">We sent a confirmation link to <b id="emailDisplay"></b>. Click it to activate your account.</p>
+      <div style="background:rgba(124,58,237,.08);border-radius:14px;padding:16px;margin-bottom:20px;text-align:left">
+        <b style="font-size:14px">Didn't get it?</b>
+        <ul style="margin:8px 0 0 16px;font-size:14px;color:var(--muted);line-height:2">
+          <li>Check your spam/junk folder</li>
+          <li>Make sure you used the right email</li>
+          <li>Wait up to 2 minutes</li>
+        </ul>
+      </div>
+      <button class="button accent full" id="resendBtn">Resend confirmation email</button>
+      <p id="resendStatus" class="status mt"></p>
+      <hr class="divider">
+      <a href="/login.html" class="button light full">Back to sign in</a>
+    </div>
+    <div id="successView" style="display:none">
+      <div style="font-size:72px;margin:24px 0">✅</div>
+      <h1>Email confirmed!</h1>
+      <p style="margin:12px 0 24px">Your account is ready. Welcome to TwoHearts ❤️</p>
+      <a href="/onboarding.html" class="button accent full">Set up your profile →</a>
+    </div>
+  </div>
+</main>
+<script type="module">
+import { supabase } from '/src/lib/supabase.js';
+
+// Store email from URL or session
+const params = new URLSearchParams(location.search);
+const email  = params.get('email') || sessionStorage.getItem('pendingEmail') || '';
+if (email) {
+  document.querySelector('#emailDisplay').textContent = email;
+  sessionStorage.setItem('pendingEmail', email);
+}
+
+// If user lands here after clicking confirmation link
+const { data: { session } } = await supabase.auth.getSession();
+if (session) {
+  document.querySelector('#pendingView').style.display = 'none';
+  document.querySelector('#successView').style.display = 'block';
+}
+
+// Resend
+let cooldown = false;
+document.querySelector('#resendBtn').onclick = async () => {
+  if (cooldown) return;
+  if (!email) { document.querySelector('#resendStatus').textContent = 'Go back and register again.'; return; }
+  const { error } = await supabase.auth.resend({ type: 'signup', email });
+  document.querySelector('#resendStatus').textContent = error
+    ? error.message : 'Email resent! Check your inbox.';
+  cooldown = true;
+  document.querySelector('#resendBtn').textContent = 'Resent ✓';
+  setTimeout(() => {
+    cooldown = false;
+    document.querySelector('#resendBtn').textContent = 'Resend confirmation email';
+  }, 30000);
+};
+
+// Listen for auth state change (user confirms in another tab)
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN') {
+    document.querySelector('#pendingView').style.display = 'none';
+    document.querySelector('#successView').style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

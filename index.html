@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TwoHearts — Your Private Space Together</title>
+  <meta name="description" content="A private, secure space for couples. Chat, share memories, video call and more — all encrypted, all yours.">
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="TwoHearts">
+  <link rel="stylesheet" href="/src/styles/app.css">
+  <style>
+    .hero-gradient{background:radial-gradient(ellipse at 60% 0%,rgba(124,58,237,.15) 0%,transparent 60%),
+      radial-gradient(ellipse at 20% 80%,rgba(236,72,153,.1) 0%,transparent 50%)}
+    .float{animation:float 6s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .fade-in{opacity:0;transform:translateY(20px);animation:fadeIn .8s forwards}
+    .fade-in:nth-child(2){animation-delay:.15s}
+    .fade-in:nth-child(3){animation-delay:.3s}
+    @keyframes fadeIn{to{opacity:1;transform:none}}
+    .gradient-text{background:linear-gradient(135deg,#7c3aed,#ec4899);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="/">♡ TwoHearts</a>
+  <div class="nav-actions hide-mobile">
+    <a href="/login.html" class="button light" style="padding:8px 16px">Sign in</a>
+    <a href="/register.html" class="button accent" style="padding:8px 16px">Get started</a>
+  </div>
+  <div class="nav-actions" style="display:none" id="mobileNav">
+    <a href="/register.html" class="button accent" style="padding:8px 14px;font-size:13px">Get started</a>
+  </div>
+</nav>
+
+<main class="hero-gradient">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge fade-in">🔒 End-to-end encrypted · Private by design</div>
+    <h1 class="fade-in">Your private space,<br><span class="gradient-text">just the two of you</span></h1>
+    <p class="fade-in">TwoHearts is a secure, intimate platform for couples — real-time chat, shared memories, video calls, private vault and more. No ads. No data selling. Just you two.</p>
+    <div class="hero-actions fade-in">
+      <a href="/register.html" class="button accent" style="font-size:17px;padding:14px 28px">
+        Create your space ❤️
+      </a>
+      <a href="/login.html" class="button light" style="font-size:17px;padding:14px 28px">Sign in</a>
+    </div>
+    <div class="float" style="font-size:80px;margin-top:40px">💑</div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-section">
+    <p class="eyebrow" style="color:rgba(255,255,255,.7)">Built for real relationships</p>
+    <h2 style="color:#fff;font-size:32px;margin-top:8px">Everything you need, nothing you don't</h2>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="num">100%</div><div class="lbl">Private — no ads</div></div>
+      <div class="stat-item"><div class="num">E2EE</div><div class="lbl">Encrypted messages</div></div>
+      <div class="stat-item"><div class="num">30s</div><div class="lbl">Identity verification</div></div>
+      <div class="stat-item"><div class="num">∞</div><div class="lbl">Memories stored</div></div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="features-section">
+    <div class="center">
+      <p class="eyebrow">Features</p>
+      <h2 style="margin-top:8px;font-size:36px">Everything your relationship needs</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">💬</span>
+        <h3>Private Chat</h3>
+        <p>Real-time messaging with typing indicators, reactions, voice messages and disappearing messages.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📸</span>
+        <h3>Shared Memories</h3>
+        <p>Save your favourite moments together. Photos, dates, captions — your story in one place.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🔒</span>
+        <h3>Private Vault</h3>
+        <p>A locked space for your most private photos and videos. Only you two can access it, ever.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📞</span>
+        <h3>Voice & Video Calls</h3>
+        <p>Crystal-clear calls built on WebRTC. No third party can listen in.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">💌</span>
+        <h3>Timed Surprises</h3>
+        <p>Schedule a love note to arrive exactly when you want it — anniversaries, birthdays, just because.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">✅</span>
+        <h3>Identity Verification</h3>
+        <p>30-second selfie verification proves you're real. Know exactly who you're talking to.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🎮</span>
+        <h3>Couple Games</h3>
+        <p>Know Me, This or That, Truth or Dare, 36 Questions — games designed to bring you closer.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📖</span>
+        <h3>Shared Journal</h3>
+        <p>A private diary you both write in. Look back on your thoughts, feelings and growth together.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🗓️</span>
+        <h3>Timeline & Dates</h3>
+        <p>Log your milestones. Never forget anniversaries, first moments, or important dates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align:center;padding:80px 20px;background:var(--surface);border-top:1px solid var(--border)">
+    <h2 style="font-size:40px;margin-bottom:16px">Ready to start?</h2>
+    <p style="margin-bottom:32px;font-size:18px">Free. Private. Yours.</p>
+    <a href="/register.html" class="button accent" style="font-size:18px;padding:16px 36px">
+      Create your space — it's free ❤️
+    </a>
+  </section>
+
+  <footer style="text-align:center;padding:32px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px">
+    <p>♡ TwoHearts · Private by design · <a href="/privacy.html">Privacy</a> · <a href="/settings.html">Settings</a></p>
+  </footer>
+</main>
+
+<script type="module">
+  import { initDarkMode } from '/src/lib/ui.js';
+  // Show mobile nav
+  if (window.innerWidth < 768) document.getElementById('mobileNav').style.display='flex';
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Notifications — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/app.html" class="icon-btn">←</a>
+  <span style="font-weight:800">🔔 Notifications</span>
+  <div></div>
+</nav>
+<main class="page">
+  <div class="section">
+    <p class="eyebrow">INBOX</p>
+    <h1>Notifications</h1>
+  </div>
+  <div id="notifInbox" class="section"></div>
+</main>
+<nav class="bottom-nav">
+  <a href="/app.html"><span class="icon">🏠</span>Home</a>
+  <a href="/chat.html"><span class="icon">💬</span>Chat</a>
+  <a href="/connect.html"><span class="icon">🔍</span>Connect</a>
+  <a href="/memories.html"><span class="icon">📸</span>Memories</a>
+  <a href="/settings.html"><span class="icon">⚙️</span>Settings</a>
+</nav>
+<script type="module" src="/src/pages/notifications.js"></script>
+</body>
+</html>

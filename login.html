@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sign in — TwoHearts</title>
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<main class="auth">
+  <form id="loginForm" class="panel">
+    <a class="brand" href="/">♡ TwoHearts</a>
+    <h1>Welcome back</h1>
+    <p>Sign in to your private space.</p>
+    <label>Email<input id="email" type="email" required autocomplete="email"></label>
+    <label>Password<input id="password" type="password" required autocomplete="current-password"></label>
+    <button class="button dark full">Sign in</button>
+    <p id="status" class="status"></p>
+    <p class="center"><a href="#" id="forgotPassword">Forgot password?</a></p>
+    <p class="center">New here? <a href="/register.html">Create an account</a></p>
+  </form>
+</main>
+<script type="module" src="/src/pages/auth/login.js"></script>
+<script type="module">
+  import { supabase } from '/src/lib/supabase.js';
+  document.querySelector('#forgotPassword').onclick = async e => {
+    e.preventDefault();
+    const email = document.querySelector('#email').value.trim();
+    if (!email) { document.querySelector('#status').textContent = 'Enter your email above first.'; return; }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + '/login.html'
+    });
+    document.querySelector('#status').textContent = error
+      ? error.message
+      : 'Password reset email sent — check your inbox.';
+  };
+</script>
+</body>
+</html>

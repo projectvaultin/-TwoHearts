@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Message — TwoHearts</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav compact">
+  <a class="brand" href="/app.html">♡</a>
+  <div class="chat-header" style="flex:1;border:0;padding:0 16px">
+    <div class="avatar" id="dmAvatar">?</div>
+    <div>
+      <b id="dmName">Loading…</b>
+      <small id="dmStatus"></small>
+    </div>
+  </div>
+  <div>
+    <button class="button light" id="blockBtn" style="font-size:13px">Block</button>
+    <button class="button light" id="reportBtn" style="font-size:13px">Report</button>
+  </div>
+</nav>
+<div class="chat">
+  <div class="message-list" id="messageList"></div>
+  <form class="composer" id="composer">
+    <input id="messageInput" placeholder="Message…" autocomplete="off">
+    <button type="submit" class="send">➤</button>
+  </form>
+</div>
+<script type="module" src="/src/pages/dm.js"></script>
+</body>
+</html>

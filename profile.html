@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Profile — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/settings.html" class="icon-btn">←</a>
+  <span style="font-weight:800">Your Profile</span>
+  <div></div>
+</nav>
+<main class="page">
+
+  <!-- Avatar -->
+  <div class="profile-hero">
+    <div style="position:relative;display:inline-block">
+      <div class="avatar avatar-xl" id="avatarPreview">?</div>
+      <label for="avatarInput" style="position:absolute;bottom:0;right:0;background:var(--accent);
+        color:#fff;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;font-size:16px">✏️</label>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none">
+    </div>
+    <div id="verifStatus" style="margin-top:12px"></div>
+  </div>
+
+  <!-- Completeness -->
+  <div class="profile-completeness panel section">
+    <div class="flex-between">
+      <b>Profile completeness</b>
+      <span id="scoreLabel" style="font-size:14px;color:var(--accent)">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="scoreFill" style="width:0%"></div></div>
+    <p id="scoreMsg" class="status" style="margin-top:6px;font-size:13px"></p>
+  </div>
+
+  <!-- Form -->
+  <form id="profileForm" class="panel section">
+    <h2 class="mb">Edit Profile</h2>
+    <label>Display name *
+      <input id="displayName" placeholder="Your name" required maxlength="50">
+    </label>
+    <label>Username *
+      <input id="username" placeholder="yourname" required maxlength="30" style="font-family:monospace">
+    </label>
+    <label>About me
+      <textarea id="about" placeholder="Tell your partner something about you…" rows="3" maxlength="300"></textarea>
+    </label>
+    <label>Location
+      <input id="location" placeholder="City, Country" maxlength="100">
+    </label>
+    <button type="submit" class="button accent full mt">Save profile</button>
+  </form>
+</main>
+
+<nav class="bottom-nav">
+  <a href="/app.html"><span class="icon">🏠</span>Home</a>
+  <a href="/chat.html"><span class="icon">💬</span>Chat</a>
+  <a href="/connect.html"><span class="icon">🔍</span>Connect</a>
+  <a href="/memories.html"><span class="icon">📸</span>Memories</a>
+  <a href="/settings.html"><span class="icon">⚙️</span>Settings</a>
+</nav>
+<script type="module" src="/src/pages/profile.js"></script>
+</body>
+</html>

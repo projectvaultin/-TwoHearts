@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Games — TwoHearts</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/app.html" class="icon-btn">←</a>
+  <span style="font-weight:800">🎮 Games</span>
+  <div></div>
+</nav>
+<main class="page">
+  <div class="section">
+    <p class="eyebrow">PLAY TOGETHER</p>
+    <h1>Couple Games</h1>
+    <p>Games designed to bring you closer, one question at a time.</p>
+  </div>
+
+  <div class="card-grid" id="gameContainer">
+    <div class="feature-tile"><span class="icon">🧠</span><b>How Well Do You Know Me?</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Answer questions about each other</p>
+      <button class="button accent full mt" id="startKnowMe">Play</button></div>
+
+    <div class="feature-tile"><span class="icon">⚡</span><b>This or That</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Quick fire either/or choices</p>
+      <button class="button accent full mt" id="startThisOrThat">Play</button></div>
+
+    <div class="feature-tile"><span class="icon">🙊</span><b>Truth or Dare</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Romantic truths and fun dares</p>
+      <button class="button accent full mt" id="startTruthOrDare">Play</button></div>
+
+    <div class="feature-tile"><span class="icon">💬</span><b>36 Questions</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">The famous closeness questions</p>
+      <button class="button accent full mt" id="start36Q">Play</button></div>
+
+    <div class="feature-tile"><span class="icon">💝</span><b>Love Language Quiz</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Discover how you give & receive love</p>
+      <button class="button accent full mt" id="startLoveLang">Play</button></div>
+
+    <div class="feature-tile"><span class="icon">🌟</span><b>Daily Question</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">One meaningful question per day</p>
+      <button class="button accent full mt" id="startDailyQ">Play</button></div>
+  </div>
+
+  <div id="gameArea" style="display:none;margin-top:24px"></div>
+</main>
+
+<nav class="bottom-nav">
+  <a href="/app.html"><span class="icon">🏠</span>Home</a>
+  <a href="/chat.html"><span class="icon">💬</span>Chat</a>
+  <a href="/connect.html"><span class="icon">🔍</span>Connect</a>
+  <a href="/memories.html"><span class="icon">📸</span>Memories</a>
+  <a href="/settings.html"><span class="icon">⚙️</span>Settings</a>
+</nav>
+<script type="module" src="/src/pages/games.js"></script>
+</body>
+</html>

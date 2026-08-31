@@ -1,0 +1,4 @@
+import { supabase } from './lib/supabase.js';
+supabase.auth.onAuthStateChange((_event, session) => {
+  document.documentElement.dataset.authenticated = session ? 'true' : 'false';
+});

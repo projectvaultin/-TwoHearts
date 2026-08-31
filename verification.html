@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Identity Verification — TwoHearts</title>
+<meta name="theme-color" content="#7c3aed">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/src/styles/app.css">
+</head>
+<body>
+<nav class="nav compact"><a class="brand" href="/app.html">♡ TwoHearts</a><span>🔐 Verification</span></nav>
+<main class="page">
+<section class="panel">
+<p class="eyebrow">VERIFIED USER</p>
+<h1>Verify your identity</h1>
+<p>You'll record a 30-second live selfie video. Follow the random prompts on screen.</p>
+<div id="camera" class="verification-camera">
+  <video id="preview" autoplay muted playsinline></video>
+  <div id="prompt" class="verification-prompt">Camera will start when you begin.</div>
+</div>
+<div class="actions">
+<button id="start" class="button dark">Start 30-second verification</button>
+<button id="stop" class="button light" disabled>Stop</button>
+</div>
+<p id="status" class="status"></p>
+</section>
+<section class="panel">
+<h3>Before you start</h3>
+<ul>
+<li>Use a well-lit environment.</li>
+<li>Keep your full face visible.</li>
+<li>Follow the randomized instructions.</li>
+<li>Do not upload someone else's recording.</li>
+<li>Your verification video is protected and is not visible to other users.</li>
+</ul>
+<label><input id="consent" type="checkbox"> I consent to recording and processing this verification video for identity and fraud prevention.</label>
+</section>
+</main>
+<script type="module" src="/src/pages/verification.js"></script>
+</body>
+</html>
