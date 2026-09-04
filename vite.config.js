@@ -10,6 +10,7 @@ const htmlEntries = Object.fromEntries(
 );
 
 export default defineConfig({
+  base: '/-TwoHearts/',
   build: {
     rollupOptions: { input: htmlEntries }
   }
