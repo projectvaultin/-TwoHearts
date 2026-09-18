@@ -1,4 +1,4 @@
-const CACHE   = 'twohearts-v3';
+const CACHE   = 'twohearts-v4';
 const SHELL   = [
   '/','/index.html','/app.html','/login.html','/register.html',
   '/chat.html','/couple.html','/profile.html','/verification.html',
@@ -8,7 +8,7 @@ const SHELL   = [
   '/account.html','/connect.html','/dm.html','/admin.html',
   '/src/styles/app.css',
   '/icons/icon-192.png','/icons/icon-512.png',
-  '/offline.html'
+  '/offline.html','/features.html'
 ];
 
 // NEVER cache private/sensitive API calls or storage

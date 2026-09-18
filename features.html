@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Feature Center — TwoHearts</title>
+<meta name="theme-color" content="#7c3aed">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="stylesheet" href="/src/styles/app.css">
+<style>
+.feature-hero{padding:28px 0 8px}.feature-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 24px}
+.feature-stat{padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--surface);text-align:center}
+.feature-stat b{display:block;font-size:28px}.feature-stat span{font-size:12px;color:var(--muted)}
+.feature-toolbar{display:grid;grid-template-columns:1.6fr 1fr auto;gap:10px;align-items:center;margin-bottom:20px}
+.feature-search,.feature-select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit}
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.feature-hub-card{display:flex;gap:14px;padding:16px;border:1px solid var(--border);border-radius:18px;background:var(--surface);min-height:170px}
+.feature-hub-card.is-foundation{opacity:.78}.feature-hub-icon{font-size:30px}.feature-hub-body{min-width:0;flex:1}
+.feature-hub-top{display:flex;justify-content:space-between;gap:8px}.feature-hub-category{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.feature-hub-body h3{margin:7px 0 5px;font-size:16px}.feature-hub-body p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.5}
+.feature-fav{border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--muted)}.feature-fav.active{color:#f59e0b}
+.feature-open{display:inline-block;padding:7px 12px;font-size:12px;text-decoration:none}
+@media(max-width:900px){.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.feature-toolbar{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.feature-stats{grid-template-columns:1fr 1fr 1fr}.feature-stat{padding:12px}.feature-stat b{font-size:22px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+<a class="brand" href="/app.html">♡ TwoHearts</a>
+<div class="nav-actions">
+<button class="icon-btn" id="themeToggle" title="Toggle dark mode">🌙</button>
+<a href="/notifications.html" class="icon-btn" title="Notifications">🔔</a>
+<a href="/settings.html" class="icon-btn" title="Settings">⚙️</a>
+</div>
+</nav>
+<main class="dashboard">
+<section class="feature-hero section">
+<p class="eyebrow">TWOHEARTS FEATURE CENTER</p>
+<h1>Everything in one place ✨</h1>
+<p style="color:var(--muted);max-width:760px">Explore the current app and its scalable foundation. Search, filter and favorite modules so the workspace can grow without redesigning the whole app.</p>
+</section>
+<section class="feature-stats">
+<div class="feature-stat"><b>156+</b><span>registered modules + custom</span></div>
+<div class="feature-stat"><b id="featureCount">156 shown</b><span>filtered view</span></div>
+<div class="feature-stat"><b>12</b><span>feature families</span></div>
+</section>
+<section class="feature-toolbar">
+<input id="featureSearch" class="feature-search" placeholder="Search features, categories, modules…">
+<select id="categoryFilter" class="feature-select"></select>
+<label style="display:flex;gap:8px;align-items:center;font-size:13px;white-space:nowrap"><input type="checkbox" id="availableOnly"> Available only</label>
+</section>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin:-8px 0 14px"><button id="createFeature" class="button accent" style="padding:7px 12px;font-size:12px">＋ Custom module</button><button id="clearFavorites" class="button light" style="padding:7px 12px;font-size:12px">Clear favorites</button></div>
+<section id="featureGrid" class="feature-grid"></section>
+</main>
+<nav class="bottom-nav">
+<a href="/app.html"><span class="icon">🏠</span>Home</a>
+<a href="/chat.html"><span class="icon">💬</span>Chat</a>
+<a href="/features.html" class="active"><span class="icon">✨</span>Features</a>
+<a href="/memories.html"><span class="icon">📸</span>Memories</a>
+<a href="/settings.html"><span class="icon">⚙️</span>Settings</a>
+</nav>
+<script type="module" src="/src/pages/features.js"></script>
+</body>
+</html>

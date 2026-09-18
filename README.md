@@ -130,3 +130,14 @@ This ensures password reset emails and email confirmation links redirect correct
 - `/connect.html` — find people by username or QR code
 - `/dm.html` — direct messages with connections
 - `/offline.html` — offline fallback page
+
+
+## v2 Feature Center
+The new `/features.html` page provides a searchable, filterable registry of 156 relationship,
+communication, memory, planning, safety, community, personalization, data, admin and analytics
+modules. Existing modules link into the current app; foundation modules are clearly marked instead
+of pretending they are already implemented.
+
+## v2 Supabase
+Use only `supabase/RESET_AND_BUILD.sql` as the canonical database setup. It resets the old
+TwoHearts application schema and builds the expanded v2 schema in one controlled pass.

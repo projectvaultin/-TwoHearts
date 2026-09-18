@@ -139,6 +139,14 @@ export function initSWUpdateNotice() {
   });
 }
 
+// Service worker registration — only same-origin, production-safe.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .catch(err => console.warn('Service worker registration failed:', err));
+  });
+}
+
 // Auto-init
 initDarkMode();
 initSWUpdateNotice();

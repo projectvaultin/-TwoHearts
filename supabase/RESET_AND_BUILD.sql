@@ -1,4 +1,106 @@
 -- ================================================================
+-- TWOHEARTS -- FULL WIPE (run this FIRST if resetting the project)
+-- ================================================================
+-- This drops every TwoHearts table, function, trigger, storage
+-- policy and storage bucket. It does NOT touch auth.users (your
+-- Supabase login accounts) -- if you also want to delete every
+-- registered user, do that separately from Authentication > Users
+-- in the dashboard, since bulk-deleting auth users from SQL is not
+-- exposed the same way and doing it here would be riskier than
+-- useful.
+--
+-- THIS IS IRREVERSIBLE. All couples, messages, media, memories,
+-- verification data, admin records, etc. will be permanently
+-- deleted. Do not run this against a project with real user data
+-- you want to keep.
+-- ================================================================
+
+begin;
+
+-- Drop trigger + function first (depends on nothing being dropped below)
+drop trigger if exists on_auth_user_created on auth.users;
+drop function if exists public.handle_new_user();
+drop function if exists public.is_couple_member(uuid);
+drop function if exists public.is_admin();
+drop function if exists public.is_conversation_member(uuid);
+
+-- Drop tables (CASCADE clears dependent foreign keys/policies/indexes automatically)
+drop table if exists public.retention_policies cascade;
+drop table if exists public.moderation_reports cascade;
+drop table if exists public.verification_reviewers cascade;
+drop table if exists public.verification_events cascade;
+drop table if exists public.verification_consents cascade;
+drop table if exists public.identity_verifications cascade;
+drop table if exists public.user_risk_profiles cascade;
+drop table if exists public.fraud_signals cascade;
+drop table if exists public.admin_access_logs cascade;
+drop table if exists public.admin_sessions cascade;
+drop table if exists public.admin_users cascade;
+drop table if exists public.group_invites cascade;
+drop table if exists public.conversation_members cascade;
+drop table if exists public.groups cascade;
+drop table if exists public.security_events cascade;
+drop table if exists public.reports cascade;
+drop table if exists public.blocks cascade;
+drop table if exists public.notification_preferences cascade;
+drop table if exists public.game_answers cascade;
+drop table if exists public.game_sessions cascade;
+drop table if exists public.call_signals cascade;
+drop table if exists public.calls cascade;
+drop table if exists public.surprises cascade;
+drop table if exists public.important_dates cascade;
+drop table if exists public.journal_entries cascade;
+drop table if exists public.timeline_events cascade;
+drop table if exists public.memory_media cascade;
+drop table if exists public.memories cascade;
+drop table if exists public.media cascade;
+drop table if exists public.message_receipts cascade;
+drop table if exists public.message_reactions cascade;
+drop table if exists public.messages cascade;
+drop table if exists public.conversations cascade;
+drop table if exists public.matches cascade;
+drop table if exists public.couple_members cascade;
+drop table if exists public.couples cascade;
+drop table if exists public.user_devices cascade;
+drop table if exists public.privacy_settings cascade;
+
+drop table if exists public.activity_events cascade;
+drop table if exists public.shared_poll_votes cascade;
+drop table if exists public.shared_poll_options cascade;
+drop table if exists public.shared_polls cascade;
+drop table if exists public.gratitude_entries cascade;
+drop table if exists public.bucket_list_items cascade;
+drop table if exists public.relationship_goals cascade;
+drop table if exists public.shared_tasks cascade;
+drop table if exists public.user_feature_settings cascade;
+drop table if exists public.profiles cascade;
+
+-- Storage: remove all objects in the app's buckets, then the buckets themselves
+delete from storage.objects where bucket_id in ('couple-media','couple-vault','verification-media','avatars');
+delete from storage.buckets where id in ('couple-media','couple-vault','verification-media','avatars');
+
+-- Remove the app's tables from the realtime publication (harmless if not present)
+do $$ begin
+  alter publication supabase_realtime drop table public.messages;
+exception when undefined_object or undefined_table then null; end $$;
+do $$ begin
+  alter publication supabase_realtime drop table public.message_reactions;
+exception when undefined_object or undefined_table then null; end $$;
+do $$ begin
+  alter publication supabase_realtime drop table public.message_receipts;
+exception when undefined_object or undefined_table then null; end $$;
+do $$ begin
+  alter publication supabase_realtime drop table public.calls;
+exception when undefined_object or undefined_table then null; end $$;
+do $$ begin
+  alter publication supabase_realtime drop table public.call_signals;
+exception when undefined_object or undefined_table then null; end $$;
+
+commit;
+
+select 'TwoHearts wipe complete. Run 2_CREATE_ALL.sql next.' as status;
+
+-- ================================================================
 -- TWOHEARTS -- SINGLE SETUP SCRIPT (run this on a clean database,
 -- ideally right after 1_DELETE_ALL.sql)
 -- ================================================================
@@ -709,20 +811,187 @@ do $$ begin
   alter publication supabase_realtime add table public.call_signals;
 exception when duplicate_object then null; end $$;
 
+
 -- ================================================================
--- VERIFICATION -- should return exactly one row with status = 'PASS'
+-- 11. TWOHEARTS EXTENSIBLE WORKSPACE TABLES
+-- These are the canonical tables for the expanded feature system.
+-- They are intentionally small and composable so future modules do
+-- not require another schema rewrite.
+-- ================================================================
+
+create table if not exists public.user_feature_settings(
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  favorite_feature_ids text[] not null default '{}',
+  custom_features jsonb not null default '[]'::jsonb,
+  hidden_feature_ids text[] not null default '{}',
+  feature_layout text not null default 'grid',
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.shared_tasks(
+  id uuid primary key default gen_random_uuid(),
+  couple_id uuid not null references public.couples(id) on delete cascade,
+  created_by uuid not null references auth.users(id) on delete cascade,
+  assigned_to uuid references auth.users(id) on delete set null,
+  title text not null,
+  description text,
+  status text not null default 'open',
+  priority text not null default 'normal',
+  due_at timestamptz,
+  completed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check(status in ('open','in_progress','done','cancelled')),
+  check(priority in ('low','normal','high','urgent'))
+);
+create index if not exists shared_tasks_couple_due_idx on public.shared_tasks(couple_id,due_at);
+
+create table if not exists public.relationship_goals(
+  id uuid primary key default gen_random_uuid(),
+  couple_id uuid not null references public.couples(id) on delete cascade,
+  created_by uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  description text,
+  target_date date,
+  progress integer not null default 0 check(progress between 0 and 100),
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists relationship_goals_couple_idx on public.relationship_goals(couple_id,status);
+
+create table if not exists public.bucket_list_items(
+  id uuid primary key default gen_random_uuid(),
+  couple_id uuid not null references public.couples(id) on delete cascade,
+  created_by uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  category text,
+  notes text,
+  target_date date,
+  completed_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists bucket_list_couple_idx on public.bucket_list_items(couple_id,created_at desc);
+
+create table if not exists public.gratitude_entries(
+  id uuid primary key default gen_random_uuid(),
+  couple_id uuid not null references public.couples(id) on delete cascade,
+  created_by uuid not null references auth.users(id) on delete cascade,
+  body text not null,
+  entry_date date not null default current_date,
+  created_at timestamptz not null default now(),
+  deleted_at timestamptz
+);
+create index if not exists gratitude_couple_date_idx on public.gratitude_entries(couple_id,entry_date desc);
+
+create table if not exists public.shared_polls(
+  id uuid primary key default gen_random_uuid(),
+  couple_id uuid not null references public.couples(id) on delete cascade,
+  created_by uuid not null references auth.users(id) on delete cascade,
+  question text not null,
+  allow_multiple boolean not null default false,
+  closes_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.shared_poll_options(
+  id uuid primary key default gen_random_uuid(),
+  poll_id uuid not null references public.shared_polls(id) on delete cascade,
+  label text not null,
+  position integer not null default 0
+);
+create index if not exists shared_poll_options_poll_idx on public.shared_poll_options(poll_id,position);
+
+create table if not exists public.shared_poll_votes(
+  poll_id uuid not null references public.shared_polls(id) on delete cascade,
+  option_id uuid not null references public.shared_poll_options(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key(poll_id,option_id,user_id)
+);
+
+-- RLS for new tables
+alter table public.user_feature_settings enable row level security;
+alter table public.shared_tasks enable row level security;
+alter table public.relationship_goals enable row level security;
+alter table public.bucket_list_items enable row level security;
+alter table public.gratitude_entries enable row level security;
+alter table public.shared_polls enable row level security;
+alter table public.shared_poll_options enable row level security;
+alter table public.shared_poll_votes enable row level security;
+
+create policy user_feature_settings_self on public.user_feature_settings
+  for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+
+create policy shared_tasks_member on public.shared_tasks
+  for all to authenticated using(public.is_couple_member(couple_id))
+  with check(public.is_couple_member(couple_id) and created_by=auth.uid());
+
+create policy relationship_goals_member on public.relationship_goals
+  for all to authenticated using(public.is_couple_member(couple_id))
+  with check(public.is_couple_member(couple_id) and created_by=auth.uid());
+
+create policy bucket_list_member on public.bucket_list_items
+  for all to authenticated using(public.is_couple_member(couple_id))
+  with check(public.is_couple_member(couple_id) and created_by=auth.uid());
+
+create policy gratitude_member on public.gratitude_entries
+  for all to authenticated using(public.is_couple_member(couple_id))
+  with check(public.is_couple_member(couple_id) and created_by=auth.uid());
+
+create policy shared_polls_member on public.shared_polls
+  for all to authenticated using(public.is_couple_member(couple_id))
+  with check(public.is_couple_member(couple_id) and created_by=auth.uid());
+
+create policy shared_poll_options_member on public.shared_poll_options
+  for all to authenticated
+  using(exists(select 1 from public.shared_polls p where p.id=poll_id and public.is_couple_member(p.couple_id)))
+  with check(exists(select 1 from public.shared_polls p where p.id=poll_id and public.is_couple_member(p.couple_id)));
+
+create policy shared_poll_votes_member on public.shared_poll_votes
+  for all to authenticated
+  using(exists(select 1 from public.shared_polls p where p.id=poll_id and public.is_couple_member(p.couple_id)))
+  with check(user_id=auth.uid() and exists(select 1 from public.shared_polls p where p.id=poll_id and public.is_couple_member(p.couple_id)));
+
+-- Realtime for lightweight collaboration modules.
+do $$ begin
+  alter publication supabase_realtime add table public.shared_tasks;
+exception when duplicate_object then null; end $$;
+do $$ begin
+  alter publication supabase_realtime add table public.shared_polls;
+exception when duplicate_object then null; end $$;
+
+-- ================================================================
+-- 12. FINAL ONE-SHOT VERIFICATION
 -- ================================================================
 select
-  'TWOHEARTS SETUP' as verification,
+  'TWOHEARTS RESET + BUILD' as verification,
   now() as checked_at,
+  (select count(*) from information_schema.tables
+    where table_schema='public'
+      and table_name in (
+        'profiles','couples','couple_members','matches','conversations','messages',
+        'memories','memory_media','media','timeline_events','journal_entries',
+        'important_dates','surprises','calls','call_signals','game_sessions',
+        'game_answers','notification_preferences','blocks','reports',
+        'security_events','groups','conversation_members','group_invites',
+        'identity_verifications','verification_consents','verification_events',
+        'verification_reviewers','moderation_reports','admin_users','admin_sessions',
+        'admin_access_logs','fraud_signals','user_risk_profiles','retention_policies',
+        'user_feature_settings','shared_tasks','relationship_goals','bucket_list_items',
+        'gratitude_entries','shared_polls','shared_poll_options','shared_poll_votes'
+      )) as required_table_count,
   case when
-    to_regclass('public.matches') is not null
-    and to_regclass('public.profiles') is not null
+    to_regclass('public.user_feature_settings') is not null
+    and to_regclass('public.shared_tasks') is not null
+    and to_regclass('public.relationship_goals') is not null
+    and to_regclass('public.bucket_list_items') is not null
+    and to_regclass('public.gratitude_entries') is not null
+    and to_regclass('public.shared_polls') is not null
+    and to_regclass('public.shared_poll_options') is not null
+    and to_regclass('public.shared_poll_votes') is not null
     and to_regprocedure('public.is_admin()') is not null
-    and to_regprocedure('public.handle_new_user()') is not null
-    and exists(select 1 from information_schema.columns where table_schema='public' and table_name='reports' and column_name='reported_id')
-    and exists(select 1 from information_schema.columns where table_schema='public' and table_name='media' and column_name='uploaded_by')
-    and exists(select 1 from information_schema.columns where table_schema='public' and table_name='couples' and column_name='avatar_url')
-    and exists(select 1 from storage.buckets where id='avatars')
-    and exists(select 1 from storage.buckets where id='couple-vault')
+    and to_regprocedure('public.is_couple_member(uuid)') is not null
+    and exists(select 1 from storage.buckets where id='couple-vault' and public=false)
+    and exists(select 1 from storage.buckets where id='verification-media' and public=false)
   then 'PASS' else 'FAIL' end as status;

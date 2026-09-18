@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Verify Email — TwoHearts</title>
   <meta name="theme-color" content="#7c3aed">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="stylesheet" href="/src/styles/app.css">
 </head>
 <body>
@@ -28,19 +28,24 @@
       <button class="button accent full" id="resendBtn">Resend confirmation email</button>
       <p id="resendStatus" class="status mt"></p>
       <hr class="divider">
-      <a href="login.html" class="button light full">Back to sign in</a>
+      <a href="/login.html" class="button light full">Back to sign in</a>
     </div>
     <div id="successView" style="display:none">
       <div style="font-size:72px;margin:24px 0">✅</div>
       <h1>Email confirmed!</h1>
       <p style="margin:12px 0 24px">Your account is ready. Welcome to TwoHearts ❤️</p>
-      <a href="onboarding.html" class="button accent full">Set up your profile →</a>
+      <a href="/onboarding.html" class="button accent full">Set up your profile →</a>
     </div>
   </div>
 </main>
 <script type="module">
-import { supabase } from '/src/lib/supabase.js';
+import { supabase, supabaseConfigured } from '/src/lib/supabase.js';
 
+if (!supabaseConfigured || !supabase) {
+  document.querySelector('#status')?.replaceChildren();
+  const el = document.querySelector('#resendStatus') || document.querySelector('#status');
+  if (el) el.textContent = 'Supabase is not configured for this deployment.';
+} else {
 // Store email from URL or session
 const params = new URLSearchParams(location.search);
 const email  = params.get('email') || sessionStorage.getItem('pendingEmail') || '';
@@ -79,6 +84,7 @@ supabase.auth.onAuthStateChange((event) => {
     document.querySelector('#successView').style.display = 'block';
   }
 });
+}
 </script>
 </body>
 </html>
